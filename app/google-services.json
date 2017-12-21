@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "1095353609057",
+    "firebase_url": "https://originalmaps-189601.firebaseio.com",
+    "project_id": "originalmaps-189601",
+    "storage_bucket": "originalmaps-189601.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1095353609057:android:b24345f98336e4d1",
+        "android_client_info": {
+          "package_name": "jp.techacademy.yamamoto.daisuke.originalmaps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1095353609057-sg1ujrtgl4vl0k7a3ta45k1tbkppq6mf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDvdrhxxNjWbbfGANOeahe0ByUANEBmvxM"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
