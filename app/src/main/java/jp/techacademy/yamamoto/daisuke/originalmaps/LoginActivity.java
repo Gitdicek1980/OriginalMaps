@@ -82,10 +82,9 @@ public class LoginActivity extends AppCompatActivity {
 
                 if (task.isSuccessful()) {
                     // 成功した場合
-                    Intent intent = new Intent(String.valueOf(MainActivity.class));
-                    startActivity(intent);
                     FirebaseUser user = mAuth.getCurrentUser();
                     DatabaseReference userRef = mDataBaseReference.child(Const.UsersPATH).child(user.getUid());
+                    finish();
 
                     if (mIsCreateAccount) {
                         // アカウント作成の時は表示名をFirebaseに保存する
