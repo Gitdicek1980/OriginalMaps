@@ -10,6 +10,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -17,6 +18,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
 
     
     private GoogleMap mMap;
+    // 六甲山：北緯34度46分41秒, 東経135度15分49秒}
+    private double mLatitude = 34.0d + 46.0d/60 + 41.0d/(60*60);
+    private double mLongitude = 135.0d + 15.0d/60 + 49.0d/(60*60);
 
 
     @Override
@@ -44,6 +48,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         }
         mMap.setMyLocationEnabled(true);
 
+        LatLng location = new LatLng(mLatitude, mLongitude);
+        CameraPosition cameraPos = new CameraPosition.Builder()
+        .target(location).zoom(10.0f)
+        .bearing(0).build();
+        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
+        // マーカー設定
+        MarkerOptions options = new MarkerOptions();
+        options.position(location);
+        mMap.addMarker(options);
     }
 
 
