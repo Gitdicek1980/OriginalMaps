@@ -84,7 +84,6 @@ public class LoginActivity extends AppCompatActivity {
                     // 成功した場合
                     FirebaseUser user = mAuth.getCurrentUser();
                     DatabaseReference userRef = mDataBaseReference.child(Const.UsersPATH).child(user.getUid());
-                    finish();
 
                     if (mIsCreateAccount) {
                         // アカウント作成の時は表示名をFirebaseに保存する
