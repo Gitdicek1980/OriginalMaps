@@ -3,9 +3,11 @@ package jp.techacademy.yamamoto.daisuke.originalmaps;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.view.View;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -40,6 +42,29 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         }
+
+        //Topのフローティングボタンが押された時
+        FloatingActionButton fab=(FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                LatLng location = new LatLng(mLatitude, mLongitude);
+                CameraPosition cameraPos = new CameraPosition.Builder()
+                        .target(location).zoom(10.0f)
+                        .bearing(0).build();
+
+                mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
+
+                // マーカー設定
+                MarkerOptions options = new MarkerOptions();
+                options.position(location);
+                mMap.addMarker(options);
+
+
+            }
+        });
     }
 
     @Override
@@ -60,19 +85,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
         //コンパス
         mMap.getUiSettings().setCompassEnabled(true);
-
-        LatLng location = new LatLng(mLatitude, mLongitude);
-        CameraPosition cameraPos = new CameraPosition.Builder()
-        .target(location).zoom(10.0f)
-        .bearing(0).build();
-
-        mMap.animateCamera(CameraUpdateFactory.newCameraPosition(cameraPos));
-
-        // マーカー設定
-        MarkerOptions options = new MarkerOptions();
-        options.position(location);
-        mMap.addMarker(options);
-
 
     }
 
