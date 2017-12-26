@@ -43,6 +43,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             startActivity(intent);
         }
 
+
+
         //Topのフローティングボタンが押された時
         FloatingActionButton fab=(FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -85,6 +87,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
         //コンパス
         mMap.getUiSettings().setCompassEnabled(true);
+        //ズームインアウトボタン
+        mMap.getUiSettings().setZoomControlsEnabled(false);
 
     }
 

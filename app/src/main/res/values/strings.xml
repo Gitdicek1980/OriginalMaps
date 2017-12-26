@@ -19,4 +19,10 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="large_up" />
+    <string name="large_down" />
+    <string name="small_down" />
+    <string name="small_up" />
+    <string name="button1"/>
+
 </resources>

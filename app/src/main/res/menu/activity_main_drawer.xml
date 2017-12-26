@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_course"
+            android:title="コース"/>
+        <item
+            android:id="@+id/nav_plan"
+            android:title="プラン"/>
+        <item
+            android:id="@+id/nav_mypage"
+            android:title="マイページ"/>
+        <item
+            android:id="@+id/nav_inquiry"
+            android:title="お問合せ"/>
+        <item
+            android:id="@+id/nav_logout"
+            android:title="ログアウト"/>
+    </group>
+</menu>
