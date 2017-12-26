@@ -22,16 +22,16 @@ import com.google.firebase.auth.FirebaseUser;
 
 public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
 
-
     private GoogleMap mMap;
     // 六甲山：北緯34度46分41秒, 東経135度15分49秒}
     private double mLatitude = 34.0d + 46.0d/60 + 41.0d/(60*60);
     private double mLongitude = 135.0d + 15.0d/60 + 49.0d/(60*60);
+    private GoogleMap 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_maps);
+        setContentView(R.layout.activity_main_for_drawer);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -42,7 +42,6 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         }
-
 
 
         //Topのフローティングボタンが押された時
@@ -82,6 +81,8 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             // for ActivityCompat#requestPermissions for more details.
             return;
         }
+
+
 
         //現在地ボタン
         mMap.setMyLocationEnabled(true);
