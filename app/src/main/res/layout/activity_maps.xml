@@ -13,8 +13,6 @@
         tools:context="jp.techacademy.yamamoto.daisuke.originalmaps.MainActivity" />
 
 
-
-
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
         android:layout_gravity="center|bottom"

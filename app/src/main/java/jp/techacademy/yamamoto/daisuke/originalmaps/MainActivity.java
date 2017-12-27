@@ -7,9 +7,17 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -20,11 +28,12 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
-public class MainActivity extends FragmentActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     // 高尾山
@@ -32,6 +41,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
     private double mLongitude = 139.0d + 16.0d / 60 + 11.7d / (60 * 60);
 
     private View mapView;
+
+    private Toolbar mToolbar;
+    private int mGenre = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,20 +54,72 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        mToolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(mToolbar);
+
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // ログイン済みのユーザーを取得する
+                FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
+
+                // ログインしていなければログイン画面に遷移させる
+                if (user == null) {
+                    Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
+                    startActivity(intent);
+                }
+
+            }
+        });
+
+        // ナビゲーションドロワーの設定
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, mToolbar, R.string.app_name, R.string.app_name);
+        drawer.addDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(MenuItem item) {
+                int id = item.getItemId();
+
+                if (id == R.id.nav_course) {
+                    mToolbar.setTitle("コース");
+                    mGenre = 1;
+                } else if (id == R.id.nav_plan) {
+                    mToolbar.setTitle("プラン");
+                    mGenre = 2;
+                } else if (id == R.id.nav_mypage) {
+                    mToolbar.setTitle("マイページ");
+                    mGenre = 3;
+                } else if (id == R.id.nav_inquiry) {
+                    mToolbar.setTitle("お問合せ");
+                    mGenre = 4;
+                } else if (id == R.id.nav_logout) {
+                    mToolbar.setTitle("ログアウト");
+                    mGenre = 5;
+                }
+
+                DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+                drawer.closeDrawer(GravityCompat.START);
+                return true;
+            }
+        });
+
+
         FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
         if (user == null) {
             Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
             startActivity(intent);
         }
 
-        mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
         mapView = mapFragment.getView();
         mapFragment.getMapAsync(this);
 
-
         //Topのフローティングボタンが押された時
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -73,10 +137,15 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 options.position(location);
                 mMap.addMarker(options);
 
+                mMap.addMarker(new MarkerOptions().position(new LatLng(36.225833, 140.105)));  // 筑波山 : 1
+                mMap.addMarker(new MarkerOptions().position(new LatLng(35.160391, 139.840869)));  // 鋸山 : 2
+                mMap.addMarker(new MarkerOptions().position(new LatLng(36.289931, 140.251857)));  // 難台山　: 3
+
 
             }
         });
     }
+
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -92,9 +161,9 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
             mMap = googleMap;
-            //現在地ボタン
-            mMap.setMyLocationEnabled(true);
 
+            //現在地ボタン+右下へ配置
+            mMap.setMyLocationEnabled(true);
             if (mapView != null &&
                     mapView.findViewById(Integer.parseInt("1")) != null) {
                 // Get the button view
@@ -105,7 +174,7 @@ public class MainActivity extends FragmentActivity implements OnMapReadyCallback
                 // position on right bottom
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_TOP, 0);
                 layoutParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM, RelativeLayout.TRUE);
-                layoutParams.setMargins(0, 0, 30, 30);
+                layoutParams.setMargins(0, 0, 60, 220);
             }
 
 

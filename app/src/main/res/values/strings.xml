@@ -23,6 +23,6 @@
     <string name="large_down" />
     <string name="small_down" />
     <string name="small_up" />
-    <string name="button1"/>
+    <string name="button1" />
 
 </resources>
