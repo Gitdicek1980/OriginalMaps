@@ -8,7 +8,7 @@ public class Course implements Serializable {
     private String mBody;
     private String mName;
     private String mUid;
-    private String mQuestionUid;
+    private String mCourseUid;
     private int mGenre;
     private byte[] mBitmapArray;
     private ArrayList<Answer> mAnswerArrayList;
@@ -29,8 +29,8 @@ public class Course implements Serializable {
         return mUid;
     }
 
-    public String getQuestionUid() {
-        return mQuestionUid;
+    public String getCourseUid() {
+        return mCourseUid;
     }
     public int getGenre() {
         return mGenre;
@@ -44,12 +44,12 @@ public class Course implements Serializable {
         return mAnswerArrayList;
     }
 
-    public Course(String title, String body, String name, String uid, String questionUid, int genre, byte[] bytes, ArrayList<Answer> answers) {
+    public Course(String title, String body, String name, String uid, String courseuid, int genre, byte[] bytes, ArrayList<Answer> answers) {
         mTitle = title;
         mBody = body;
         mName = name;
         mUid = uid;
-        mQuestionUid = questionUid;
+        mCourseUid = courseuid;
         mGenre = genre;
         mBitmapArray = bytes.clone();
         mAnswerArrayList = answers;

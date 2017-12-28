@@ -12,11 +12,11 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class CoursesListAdapter extends BaseAdapter{
+public class CourseListAdapter extends BaseAdapter{
     private LayoutInflater mLayoutInflater = null;
     private ArrayList<Course> mCourseArrayList;
 
-    public CoursesListAdapter(Context context) {
+    public CourseListAdapter(Context context) {
         mLayoutInflater = (LayoutInflater)context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -62,7 +62,7 @@ public class CoursesListAdapter extends BaseAdapter{
         return convertView;
     }
 
-    public void setQuestionArrayList(ArrayList<Course> CourseArrayList) {
+    public void setCourseArrayList(ArrayList<Course> CourseArrayList) {
         mCourseArrayList = CourseArrayList;
     }
 }
