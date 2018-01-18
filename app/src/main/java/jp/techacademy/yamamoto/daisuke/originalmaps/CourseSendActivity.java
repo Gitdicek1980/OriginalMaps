@@ -27,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -153,6 +154,7 @@ public class CourseSendActivity extends AppCompatActivity implements View.OnClic
             String title = mTitleText.getText().toString();
             String body = mBodyText.getText().toString();
 
+
             if (title.length() == 0) {
                 // 質問が入力されていない時はエラーを表示するだけ
                 Snackbar.make(v, "コースタイトルを入力して下さい", Snackbar.LENGTH_LONG).show();
@@ -236,6 +238,8 @@ public class CourseSendActivity extends AppCompatActivity implements View.OnClic
 
         if (databaseError == null) {
             finish();
+
+
         } else {
             Snackbar.make(findViewById(android.R.id.content), "投稿に失敗しました", Snackbar.LENGTH_LONG).show();
         }

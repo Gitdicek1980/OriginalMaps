@@ -8,9 +8,9 @@ import android.location.Location;
 import android.location.LocationManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.ActivityCompat;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,6 +19,7 @@ import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
@@ -29,6 +30,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -36,13 +38,15 @@ import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class MainActivity extends AppCompatActivity implements OnMapReadyCallback {
+public class MainActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleMap.OnInfoWindowClickListener {
 
     private GoogleMap mMap;
+
     // 高尾山
     private double mLatitude = 35.0d + 37.0d / 60 + 56.9d / (60 * 60);
     private double mLongitude = 139.0d + 16.0d / 60 + 11.7d / (60 * 60);
@@ -57,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
     private ListView mListView;
     private ArrayList<Course> mCourseArrayList;
     private CourseListAdapter mAdapter;
+
 
     private ChildEventListener mEventListener = new ChildEventListener() {
         @Override
@@ -146,17 +151,29 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab2);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                // ジャンルを選択していない場合（mGenre == 0）はエラーを表示するだけ
+                if (mGenre == 0) {
+                    Snackbar.make(view, "ジャンルを選択して下さい", Snackbar.LENGTH_LONG).show();
+                    return;
+                }
+
                 // ログイン済みのユーザーを取得する
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
 
-                // ログインしていなければログイン画面に遷移させる
                 if (user == null) {
+                    // ログインしていなければログイン画面に遷移させる
                     Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
                     startActivity(intent);
+                } else {
+                    // ジャンルを渡して質問作成画面を起動する
+                    Intent intent = new Intent(getApplicationContext(), CourseSendActivity.class);
+                    intent.putExtra("genre", mGenre);
+                    startActivity(intent);
+
                 }
 
             }
@@ -173,19 +190,28 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             @Override
             public boolean onNavigationItemSelected(MenuItem item) {
                 int id = item.getItemId();
+                mListView.setVisibility(View.VISIBLE);
+                mapView.setVisibility(View.INVISIBLE);
+
 
                 if (id == R.id.nav_course) {
-                    mToolbar.setTitle("コース");
+                    mToolbar.setTitle("コース一覧");
                     mGenre = 1;
+
                 } else if (id == R.id.nav_plan) {
-                    mToolbar.setTitle("プラン");
+                    mToolbar.setTitle("プラン一覧");
                     mGenre = 2;
+
                 } else if (id == R.id.nav_mypage) {
                     mToolbar.setTitle("マイページ");
                     mGenre = 3;
+                    mListView.setVisibility(View.INVISIBLE);
+                    mapView.setVisibility(View.VISIBLE);
+
                 } else if (id == R.id.nav_inquiry) {
                     mToolbar.setTitle("お問合せ");
                     mGenre = 4;
+
                 } else if (id == R.id.nav_logout) {
                     mToolbar.setTitle("ログアウト");
                     mGenre = 5;
@@ -211,19 +237,32 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
+        // Firebase
+        mDatabaseReference = FirebaseDatabase.getInstance().getReference();
 
-        FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-        if (user == null) {
-            Intent intent = new Intent(getApplicationContext(), LoginActivity.class);
-            startActivity(intent);
-        }
+        // ListViewの準備
+        mListView = (ListView) findViewById(R.id.listView);
+        mAdapter = new CourseListAdapter(this);
+        mCourseArrayList = new ArrayList<Course>();
+        mAdapter.notifyDataSetChanged();
+
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                // Courseのインスタンスを渡して質問詳細画面を起動する
+                Intent intent = new Intent(getApplicationContext(), CourseDetailActivity.class);
+                intent.putExtra("course", mCourseArrayList.get(position));
+                startActivity(intent);
+            }
+        });
+
 
         mapView = mapFragment.getView();
         mapFragment.getMapAsync(this);
 
         //Topのフローティングボタンが押された時
-        FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
+        FloatingActionButton fab1 = (FloatingActionButton) findViewById(R.id.fab1);
+        fab1.setOnClickListener(new View.OnClickListener() {
 
             @Override
             public void onClick(View v) {
@@ -238,11 +277,23 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                 // マーカー設定
                 MarkerOptions options = new MarkerOptions();
                 options.position(location);
+                options.title("高尾");
+                options.snippet(location.toString());
+
+                // マップにマーカー追加
+                Marker marker = mMap.addMarker(options);
+
+                // インフォウィンドウ表示
+                marker.showInfoWindow();
+
                 mMap.addMarker(options);
 
-                mMap.addMarker(new MarkerOptions().position(new LatLng(36.225833, 140.105)));  // 筑波山 : 1
-                mMap.addMarker(new MarkerOptions().position(new LatLng(35.160391, 139.840869)));  // 鋸山 : 2
-                mMap.addMarker(new MarkerOptions().position(new LatLng(36.289931, 140.251857)));  // 難台山　: 3
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(36.225833, 140.105)));  // 筑波山 : 1
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(35.160391, 139.840869)));  // 鋸山 : 2
+                mMap.addMarker(new MarkerOptions()
+                        .position(new LatLng(36.289931, 140.251857)));  // 難台山　: 3
 
 
             }
@@ -281,6 +332,8 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
 
 
+
+
         //コンパス
         mMap.getUiSettings().setCompassEnabled(true);
         //ズームインアウトボタン
@@ -305,6 +358,11 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     }
 
+    @Override
+    public void onInfoWindowClick(Marker marker) {
+        Toast.makeText(this, "Info window clicked",
+                Toast.LENGTH_SHORT).show();
+    }
 }
 
 

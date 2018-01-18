@@ -53,7 +53,10 @@
             android:label="@string/title_activity_login" />
         <activity android:name=".CourseSendActivity" />
         <activity android:name=".SettingActivity" />
-        <activity android:name=".CourseDetailActivity"></activity>
+        <activity android:name=".AnswerSendActivity" />
+        <activity
+            android:name=".CourseDetailActivity"
+            android:parentActivityName=".MainActivity"></activity>
     </application>
 
 </manifest>
